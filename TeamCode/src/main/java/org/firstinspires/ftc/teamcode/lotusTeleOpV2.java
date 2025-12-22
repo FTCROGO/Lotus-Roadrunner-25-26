@@ -226,6 +226,7 @@ public class lotusTeleOpV2 extends LinearOpMode {
 //            telemetry.addData("sH Position", "%.2f", sH.getPosition());
             telemetry.addData("rw1 power", "%.2f", sRW1.getPower());
             telemetry.addData("rw2 power", "%.2f", sRW2.getPower());
+//            telemetry.addData("fw power", "%.")
             telemetry.update();
 
         }

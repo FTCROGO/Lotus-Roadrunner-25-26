@@ -6,33 +6,23 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.InstantAction;
-import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
-import com.acmerobotics.roadrunner.ftc.ParallelOTOSEncoder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
-
-import java.time.Instant;
-
 
 
 @Config
-@Autonomous(name = "lotusAutoV1", group = "Autonomous")
+@Autonomous(name = "AutoV1_RedFar", group = "Autonomous")
 
-public class lotusAutoV1 extends LinearOpMode {
+public class AutoV1_RedFar extends LinearOpMode {
 
 // Intake servo initialization
     public class SI {
@@ -87,7 +77,7 @@ public class lotusAutoV1 extends LinearOpMode {
 
             public boolean run(@NonNull TelemetryPacket packet) {
                 sRW1.setPower(1);
-                sleep(2000);
+                sleep(1700);
                 return false;
             }
         }
@@ -127,7 +117,7 @@ public class lotusAutoV1 extends LinearOpMode {
 
              public boolean run(@NonNull TelemetryPacket packet) {
                  sRW2.setPower(1);
-                 sleep(1500);
+                 sleep(1300);
                  return false;
              }
          }
@@ -164,12 +154,11 @@ public class lotusAutoV1 extends LinearOpMode {
 
         public class MFWSpin implements Action {
             private boolean initialized = false;
-            @Override
+
 
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
                     mFW.setPower(1);
-                    sleep(3000);
                     initialized = true;
                 }
                 return false;
@@ -201,13 +190,15 @@ public class lotusAutoV1 extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Pose2d initPose = new Pose2d(63.5, 24, Math.toRadians(90));
-        Pose2d shootPose = new Pose2d(-12, 12, Math.toRadians(45));
-        Pose2d intake1Pose = new Pose2d(-12, 30, Math.toRadians(0));
-        Pose2d intake2Pose = new Pose2d(-12, 40, Math.toRadians(0));
-        Vector2d shootVec = new Vector2d(-12, 12);
-        Vector2d intake1Vec = new Vector2d(-12, 30);
-        Vector2d intake2Vec = new Vector2d(-12, 40);
+        Pose2d initPose = new Pose2d(63.5, 24, Math.toRadians(180));
+        Pose2d shootPose = new Pose2d(-2, 9, Math.toRadians(138));
+        Pose2d intake1Pose = new Pose2d(-11, 25, Math.toRadians(90));
+        Pose2d intake2Pose = new Pose2d(-11, 29, Math.toRadians(90));
+        Pose2d intake3Pose = new Pose2d(-11, 40, Math.toRadians(90));
+        Vector2d shootVec = new Vector2d(-2, 9);
+        Vector2d intake1Vec = new Vector2d(-11, 25);
+        Vector2d intake2Vec = new Vector2d(-11, 29);
+        Vector2d intake3Vec = new Vector2d(-11, 40);
         MecanumDrive drive = new MecanumDrive(hardwareMap, initPose);
         SI sI = new SI(hardwareMap);
         SRW1 sRW1 = new SRW1(hardwareMap);
@@ -216,13 +207,15 @@ public class lotusAutoV1 extends LinearOpMode {
 
 
         TrajectoryActionBuilder initToShoot = drive.actionBuilder(initPose)
-                .splineTo(shootVec, Math.toRadians(135));
+                .strafeToLinearHeading(shootVec, Math.toRadians(138));
         TrajectoryActionBuilder shootToIntake1 = drive.actionBuilder(shootPose)
                 .splineTo(intake1Vec, Math.toRadians(90));
         TrajectoryActionBuilder intake1ToIntake2 = drive.actionBuilder(intake1Pose)
                 .splineTo(intake2Vec, Math.toRadians(90));
-        TrajectoryActionBuilder intake2ToShoot = drive.actionBuilder(intake2Pose)
-                .splineTo(shootVec, Math.toRadians(135));
+        TrajectoryActionBuilder intake2ToIntake3 = drive.actionBuilder(intake2Pose)
+                .splineTo(intake3Vec, Math.toRadians(90));
+        TrajectoryActionBuilder intake3ToShoot = drive.actionBuilder(intake3Pose)
+                .strafeToLinearHeading(shootVec, Math.toRadians(138));
 
 
         if (isStopRequested())
@@ -238,25 +231,33 @@ public class lotusAutoV1 extends LinearOpMode {
                         sRW2.sRW2Spin(),
                         sRW2.sRW2Stop(),
                         sRW1.sRW1Spin(),
-                        sRW1.sRW1Stop(),
-                        sRW2.sRW2Spin(),
                         mFW.mFWStop(),
-                        sRW2.sRW2Stop(),
-                        shootToIntake1.build(),
-                        sRW1.sRW1Spin(),
-                        sI.sISpin(),
-                        intake1ToIntake2.build(),
-                        sRW2.sRW2Stop(),
-                        sI.sIStop(),
-                        intake2ToShoot.build(),
+                        sRW1.sRW1Stop(),
                         mFW.mFWSpin(),
                         sRW2.sRW2Spin(),
-                        sRW2.sRW2Stop(),
-                        sRW1.sRW1Spin(),
-                        sRW1.sRW1Stop(),
-                        sRW2.sRW2Spin(), //rw1 spin a lot, rw2 spin only once
                         mFW.mFWStop(),
-                        sRW2.sRW2Stop()
+                        sRW2.sRW2Stop(),
+
+                        shootToIntake1.build(),
+                        sI.sISpin(),
+                        sRW1.sRW1Spin(),
+                        intake1ToIntake2.build(),
+                        sRW1.sRW1Spin(),
+                        sI.sISpin(),
+                        intake2ToIntake3.build(),
+                        sI.sIStop(),
+
+                        intake3ToShoot.build(),
+                        mFW.mFWSpin(),
+                        sRW1.sRW1Spin(),
+                        sRW2.sRW2Spin(),
+                        sRW1.sRW1Stop(),
+                        sI.sISpin(),
+                        sRW1.sRW1Spin(),
+                        sI.sIStop(),
+                        sRW2.sRW2Spin(),
+                        sRW1.sRW1Stop(),
+                        mFW.mFWStop()
                 )
         );
     }
