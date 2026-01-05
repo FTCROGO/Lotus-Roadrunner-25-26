@@ -1,16 +1,20 @@
 package org.firstinspires.ftc.teamcode;
+
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.hardware.limelightvision.Limelight3A;import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
-import java.util.List;
 
+import java.util.List;
 
 
 @TeleOp(name = "Robot: lotusTeleOPV3", group = "Robot")
@@ -29,7 +33,6 @@ public class lotusTeleOPV3 extends LinearOpMode {
     public CRServo sRW1 = null;
     public CRServo sRW2 = null;     //RW --> RW2, consider changing to non-CR
 //    public Servo sH = null;
-
 
 
     public IMU imu;
@@ -68,7 +71,6 @@ public class lotusTeleOPV3 extends LinearOpMode {
         double counterFW = 1;
 
 
-
         mFL = hardwareMap.get(DcMotor.class, "leftFront");
         mFR = hardwareMap.get(DcMotor.class, "rightFront");
         mBL = hardwareMap.get(DcMotor.class, "leftBack");
@@ -76,9 +78,9 @@ public class lotusTeleOPV3 extends LinearOpMode {
 
         mFW = hardwareMap.get(DcMotor.class, "mFW");
 
-        sI =  hardwareMap.get(CRServo.class, "sI");
-        sRW1  = hardwareMap.get(CRServo.class, "sRW1");
-        sRW2  = hardwareMap.get(CRServo.class, "sRW2");
+        sI = hardwareMap.get(CRServo.class, "sI");
+        sRW1 = hardwareMap.get(CRServo.class, "sRW1");
+        sRW2 = hardwareMap.get(CRServo.class, "sRW2");
 
 
         imu = hardwareMap.get(IMU.class, "imu");
@@ -118,8 +120,6 @@ public class lotusTeleOPV3 extends LinearOpMode {
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
-
 
 
         telemetry.addData(">", "Robot Ready.  Press START.");
@@ -172,83 +172,64 @@ public class lotusTeleOPV3 extends LinearOpMode {
             mBL.setPower(powerBL);
             mBR.setPower(powerBR);
             // Flywheel - gamepad 2: y (start & stop)
-            if (gamepad2.yWasPressed())
-            {
-                counterFW +=1;
+            if (gamepad2.yWasPressed()) {
+                counterFW += 1;
             }
-            if (counterFW % 2 == 0)
-            {
+            if (counterFW % 2 == 0) {
                 mFW.setPower(1.0);
             }
-            if (counterFW % 2 == 1)
-            {
+            if (counterFW % 2 == 1) {
                 mFW.setPower(0.0);
             }
 
 // trigger flywheel w/ rw1 & counter for spinning previously
 
 // Intake - gamepad 1: right bumper (start & stop)
-            if (gamepad2.rightBumperWasPressed())
-            {
-                counterI +=1;
+            if (gamepad2.rightBumperWasPressed()) {
+                counterI += 1;
             }
-            if (counterI % 2 == 0)
-            {
+            if (counterI % 2 == 0) {
                 sI.setPower(1.0);
             }
-            if (counterI % 2 == 1)
-            {
+            if (counterI % 2 == 1) {
                 sI.setPower(0.0);
             }
 
 
-
 // Ramp Wheel 1 - gamepad 2: left bumper (start & stop)
-            if (gamepad1.rightBumperWasPressed())
-            {
-                counterRW1 +=1;
+            if (gamepad1.rightBumperWasPressed()) {
+                counterRW1 += 1;
             }
-            if (counterRW1 % 2 == 0)
-            {
+            if (counterRW1 % 2 == 0) {
                 sRW1.setPower(1.0);
             }
-            if (counterRW1 % 2 == 1)
-            {
+            if (counterRW1 % 2 == 1) {
                 sRW1.setPower(0.0);
             }
 
 
-
-
 // Ramp Wheel 2 - gamepad 2: a (start & stop)
-            if (gamepad2.aWasPressed())
-            {
-                counterRW2a +=1;
+            if (gamepad2.aWasPressed()) {
+                counterRW2a += 1;
             }
-            if (counterRW2a % 2 == 0)
-            {
+            if (counterRW2a % 2 == 0) {
                 sRW2.setPower(1.0);
             }
-            if (counterRW2a % 2 == 1  && counterRW2x % 2 == 1)
-            {
+            if (counterRW2a % 2 == 1 && counterRW2x % 2 == 1) {
                 sRW2.setPower(0.0);
             }
 
 
-            if (gamepad2.xWasPressed())
-            {
-                counterRW2x +=1;
+            if (gamepad2.xWasPressed()) {
+                counterRW2x += 1;
             }
-            if (counterRW2x % 2 == 0)
-            {
+            if (counterRW2x % 2 == 0) {
                 sRW2.setPower(-0.25);
                 sRW1.setPower(-0.25);
             }
-            if (counterRW2x % 2 == 1 && counterRW2a % 2 == 1)
-            {
+            if (counterRW2x % 2 == 1 && counterRW2a % 2 == 1) {
                 sRW2.setPower(0.0);
             }
-
 
 
 // Hood - gamepad 1: a (near position - hood back), b (far position - hood forward)
@@ -285,50 +266,45 @@ public class lotusTeleOPV3 extends LinearOpMode {
                 }
 
 
-                if (distance < 1.35 && distance > 0.58 || distance>1.75 && distance<1.93) {
+                if (distance < 1.35 && distance > 0.58 || distance > 1.75 && distance < 1.93) {
                     led.setPosition(0.5);
-                }
-                else {
+                } else {
                     led.setPosition(0.2);
                 }
 
-            // COLOR DETECTION (for green/purple balls)
-            List<LLResultTypes.ColorResult> colorResults = result.getColorResults();
-
-            if (!colorResults.isEmpty()) {
-                for (LLResultTypes.ColorResult color : colorResults) {
-                    double ballX = color.getTargetXDegrees();
-                    double ballY = color.getTargetYDegrees();
-                    double ballArea = color.getTargetArea();
-
-                    telemetry.addData("Ball X", ballX);
-                    telemetry.addData("Ball Y", ballY);
-                    telemetry.addData("Ball Area", ballArea);
-                }
-            } else {
-                telemetry.addData("Balls", "None detected");
+//                // COLOR DETECTION (for green/purple balls)
+//                List<LLResultTypes.ColorResult> colorResults = result.getColorResults();
+//
+//                if (!colorResults.isEmpty()) {
+//                    for (LLResultTypes.ColorResult color : colorResults) {
+//                        double ballX = color.getTargetXDegrees();
+//                        double ballY = color.getTargetYDegrees();
+//                        double ballArea = color.getTargetArea();
+//
+//                        telemetry.addData("Ball X", ballX);
+//                        telemetry.addData("Ball Y", ballY);
+//                        telemetry.addData("Ball Area", ballArea);
+//                    }
+//                } else {
+//                    telemetry.addData("Balls", "None detected");
+//                }
             }
+
+            telemetry.update();
         }
 
-                    telemetry.update();
-                }
-
-                LimeLight.stop();
-            }
-        }
+        LimeLight.stop();
+    }
+}
 
 
-//// Telemetry
-////            telemetry.addData("sRW2 Position", "%.2f", sRW2.getPosition());   --> needs to be non-CR
-////            telemetry.addData("sH Position", "%.2f", sH.getPosition());
+/// / Telemetry
+/// /            telemetry.addData("sRW2 Position", "%.2f", sRW2.getPosition());   --> needs to be non-CR
+/// /            telemetry.addData("sH Position", "%.2f", sH.getPosition());
 //            telemetry.addData("rw1 power", "%.2f", sRW1.getPower());
 //            telemetry.addData("rw2 power", "%.2f", sRW2.getPower());
 ////            telemetry.addData("fw power", "%.")
 //            telemetry.update();
-
-
-
-
 
 
 // Telemetry

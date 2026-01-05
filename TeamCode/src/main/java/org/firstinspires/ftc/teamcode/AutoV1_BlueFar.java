@@ -191,15 +191,15 @@ public class AutoV1_BlueFar extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Pose2d initPose = new Pose2d(63.5, -24, Math.toRadians(180));
-        Pose2d shootPose = new Pose2d(-2, -9, Math.toRadians(222));
-        Pose2d intake1Pose = new Pose2d(-18, -29, Math.toRadians(270));
-        Pose2d intake2Pose = new Pose2d(-18, -33, Math.toRadians(270));
-        Pose2d intake3Pose = new Pose2d(-18, -40, Math.toRadians(270));
-        Vector2d shootVec = new Vector2d(-2, -9);
-        Vector2d intake1Vec = new Vector2d(-18, -29);
-        Vector2d intake2Vec = new Vector2d(-18, -33);
-        Vector2d intake3Vec = new Vector2d(-18, -40);
+        Pose2d initPose = new Pose2d(-24, 63.5, Math.toRadians(180));
+        Pose2d shootPose = new Pose2d(-9, -2, Math.toRadians(222));
+        Pose2d intake1Pose = new Pose2d(-29, -18, Math.toRadians(270));
+        Pose2d intake2Pose = new Pose2d(-33, -18, Math.toRadians(270));
+        Pose2d intake3Pose = new Pose2d(-40, -18, Math.toRadians(270));
+        Vector2d shootVec = new Vector2d(-9, -2);
+        Vector2d intake1Vec = new Vector2d(-29, -18);
+        Vector2d intake2Vec = new Vector2d(-33, -18);
+        Vector2d intake3Vec = new Vector2d(-40, -18);
         MecanumDrive drive = new MecanumDrive(hardwareMap, initPose);
         SI sI = new SI(hardwareMap);
         SRW1 sRW1 = new SRW1(hardwareMap);
