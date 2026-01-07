@@ -70,17 +70,6 @@ public class lotusTeleOPV3 extends LinearOpMode {
         double counterRW2x = 1;
         double counterFW = 1;
 
-        double angleX;
-        double angleY;
-        double angle;
-        double magnitude;
-        double robotHeading;
-        double targetHeading;
-        double headingError;
-        double kP; //how much force the robot should turn if it's off
-        double turnPower;
-        double joystickDeadZone;
-
 
         mFL = hardwareMap.get(DcMotor.class, "leftFront");
         mFR = hardwareMap.get(DcMotor.class, "rightFront");
@@ -150,43 +139,7 @@ public class lotusTeleOPV3 extends LinearOpMode {
 
             changeX = gamepad1.left_stick_x;
             changeY = -gamepad1.left_stick_y;
-            changeZ = Math.pow(gamepad1.right_stick_x, 3);
-
-            joystickDeadZone = 0.2;
-
-            angleX = gamepad1.right_stick_x;
-            angleY = -gamepad1.right_stick_y;
-
-            magnitude = Math.hypot(angleX, angleY);
-
-            angle = Math.atan2(angleY, angleX);
-            magnitude = Math.sqrt(angleX * angleX + angleY * angleY);
-
-            targetHeading = 0;
-
-            if (magnitude > joystickDeadZone) {
-
-                targetHeading = Math.atan2(angleY, angleX);// joystick direction
-                robotHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-                headingError = targetHeading - robotHeading;
-
-                while (headingError > Math.PI) headingError -= 2 * Math.PI;
-                while (headingError < -Math.PI) headingError += 2 * Math.PI;
-
-                kP = 1.5;
-                turnPower = kP * headingError;
-                turnPower = Math.max(-1.0, Math.min(1.0, turnPower));
-
-                mFL.setPower(turnPower);
-                mBL.setPower(turnPower);
-                mFR.setPower(-turnPower);
-                mBR.setPower(-turnPower);
-            } else {
-                mFL.setPower(0);
-                mBL.setPower(0);
-                mFR.setPower(0);
-                mBR.setPower(0);
-            }
+            changeZ = gamepad1.right_stick_x;
 
             cosA = Math.cos(Math.toRadians(-zDifference));
             sinA = Math.sin(Math.toRadians(-zDifference));
