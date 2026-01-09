@@ -20,9 +20,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
 @Config
-@Autonomous(name = "AutoV1_RedFar", group = "Autonomous")
+@Autonomous(name = "AutoV1_BlueGoal", group = "Autonomous")
 
-public class AutoV1_RedFar extends LinearOpMode {
+public class AutoV1_BlueGoal extends LinearOpMode {
 
     // Intake servo initialization
     public class SI {
@@ -190,15 +190,15 @@ public class AutoV1_RedFar extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Pose2d initPose = new Pose2d(63.5, 24, Math.toRadians(180));
-        Pose2d shootPose = new Pose2d(-2, 9, Math.toRadians(138));
-        Pose2d intake1Pose = new Pose2d(-11, 25, Math.toRadians(90));
-        Pose2d intake2Pose = new Pose2d(-11, 29, Math.toRadians(90));
-        Pose2d intake3Pose = new Pose2d(-11, 40, Math.toRadians(90));
+        Pose2d initPose = new Pose2d(-63.5, -48, Math.toRadians(45));
+        Pose2d shootPose = new Pose2d(-2, -9, Math.toRadians(222));
+        Pose2d intake1Pose = new Pose2d(-11, -25, Math.toRadians(270));
+        Pose2d intake2Pose = new Pose2d(-11, -29, Math.toRadians(270));
+        Pose2d intake3Pose = new Pose2d(-11, -40, Math.toRadians(270));
         Vector2d shootVec = new Vector2d(-2, 9);
-        Vector2d intake1Vec = new Vector2d(-11, 25);
-        Vector2d intake2Vec = new Vector2d(-11, 29);
-        Vector2d intake3Vec = new Vector2d(-11, 40);
+        Vector2d intake1Vec = new Vector2d(-11, -25);
+        Vector2d intake2Vec = new Vector2d(-11, -29);
+        Vector2d intake3Vec = new Vector2d(-11, -40);
         MecanumDrive drive = new MecanumDrive(hardwareMap, initPose);
         SI sI = new SI(hardwareMap);
         SRW1 sRW1 = new SRW1(hardwareMap);
@@ -207,15 +207,15 @@ public class AutoV1_RedFar extends LinearOpMode {
 
 
         TrajectoryActionBuilder initToShoot = drive.actionBuilder(initPose)
-                .strafeToLinearHeading(shootVec, Math.toRadians(138));
+                .strafeToLinearHeading(shootVec, Math.toRadians(222));
         TrajectoryActionBuilder shootToIntake1 = drive.actionBuilder(shootPose)
-                .splineTo(intake1Vec, Math.toRadians(90));
+                .splineTo(intake1Vec, Math.toRadians(270));
         TrajectoryActionBuilder intake1ToIntake2 = drive.actionBuilder(intake1Pose)
-                .splineTo(intake2Vec, Math.toRadians(90));
+                .splineTo(intake2Vec, Math.toRadians(270));
         TrajectoryActionBuilder intake2ToIntake3 = drive.actionBuilder(intake2Pose)
-                .splineTo(intake3Vec, Math.toRadians(90));
+                .splineTo(intake3Vec, Math.toRadians(270));
         TrajectoryActionBuilder intake3ToShoot = drive.actionBuilder(intake3Pose)
-                .strafeToLinearHeading(shootVec, Math.toRadians(138));
+                .strafeToLinearHeading(shootVec, Math.toRadians(222));
 
 
         if (isStopRequested())
