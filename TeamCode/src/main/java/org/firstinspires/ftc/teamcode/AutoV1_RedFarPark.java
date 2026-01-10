@@ -20,9 +20,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
 @Config
-@Autonomous(name = "AutoV1_RedPark", group = "Autonomous")
+@Autonomous(name = "AutoV1_RedFarPark", group = "Autonomous")
 
-public class AutoV1_RedPark extends LinearOpMode {
+public class AutoV1_RedFarPark extends LinearOpMode {
 
     // Intake servo initialization
     public class SI {
@@ -159,6 +159,7 @@ public class AutoV1_RedPark extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
                     mFW.setPower(1);
+                    sleep(2000);
                     initialized = true;
                 }
                 return false;
@@ -190,16 +191,20 @@ public class AutoV1_RedPark extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Pose2d initPose = new Pose2d(63.5, 24, Math.toRadians(90));
-        Vector2d parkVec = new Vector2d(63.5, 55);
+        Pose2d initPose = new Pose2d(63.5, 24, Math.toRadians(180));
+        Pose2d parkPose = new Pose2d(63.5, 50, Math.toRadians(180));
+
+        Vector2d parkVec = new Vector2d(63.5, 50);
+
         MecanumDrive drive = new MecanumDrive(hardwareMap, initPose);
         SI sI = new SI(hardwareMap);
         SRW1 sRW1 = new SRW1(hardwareMap);
         SRW2 sRW2 = new SRW2(hardwareMap);
         MFW mFW = new MFW(hardwareMap);
 
+
         TrajectoryActionBuilder initToPark = drive.actionBuilder(initPose)
-                .strafeToLinearHeading(parkVec, Math.toRadians(90));
+                .strafeToLinearHeading(parkVec, Math.toRadians(180));
 
 
         if (isStopRequested())

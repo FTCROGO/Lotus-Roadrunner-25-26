@@ -24,7 +24,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class AutoV1_RedClose extends LinearOpMode {
 
-// Intake servo initialization
+    // Intake servo initialization
     public class SI {
         private CRServo sI;
 
@@ -33,18 +33,33 @@ public class AutoV1_RedClose extends LinearOpMode {
             sI.setDirection(CRServo.Direction.REVERSE);
         }
 
-        public class SISpin implements Action {
+        public class SISpin1 implements Action {
             @Override
 
             public boolean run (@NonNull TelemetryPacket packet) {
                 sI.setPower(1);
-                sleep(2000);
+                sleep(400);
                 return false;
             }
         }
-        public Action sISpin() {
-            return new SISpin();
+        public Action sISpin1() {
+            return new SISpin1();
         }
+
+
+        public class SISpin2 implements Action {
+            @Override
+
+            public boolean run (@NonNull TelemetryPacket packet) {
+                sI.setPower(1);
+                sleep(800);
+                return false;
+            }
+        }
+        public Action sISpin2() {
+            return new SISpin2();
+        }
+
 
 
         public class SIStop implements Action {
@@ -63,7 +78,7 @@ public class AutoV1_RedClose extends LinearOpMode {
 
 
 
-// Ramp wheel 1 servo initialization
+    // Ramp wheel 1 servo initialization
     public class SRW1 {
         private CRServo sRW1;
 
@@ -77,7 +92,7 @@ public class AutoV1_RedClose extends LinearOpMode {
 
             public boolean run(@NonNull TelemetryPacket packet) {
                 sRW1.setPower(1);
-                sleep(1700);
+                sleep(400);
                 return false;
             }
         }
@@ -103,47 +118,47 @@ public class AutoV1_RedClose extends LinearOpMode {
 
 
 
-// Ramp wheel 2 servo initialization
+    // Ramp wheel 2 servo initialization
     public class SRW2 {
-         private CRServo sRW2;
+        private CRServo sRW2;
 
-         public SRW2(HardwareMap hardwareMap) {
-             sRW2 = hardwareMap.get(CRServo.class, "sRW2");
-             sRW2.setDirection(CRServo.Direction.REVERSE);
-         }
+        public SRW2(HardwareMap hardwareMap) {
+            sRW2 = hardwareMap.get(CRServo.class, "sRW2");
+            sRW2.setDirection(CRServo.Direction.REVERSE);
+        }
 
-         public class SRW2Spin implements Action {
-             @Override
+        public class SRW2Spin implements Action {
+            @Override
 
-             public boolean run(@NonNull TelemetryPacket packet) {
-                 sRW2.setPower(1);
-                 sleep(1300);
-                 return false;
-             }
-         }
+            public boolean run(@NonNull TelemetryPacket packet) {
+                sRW2.setPower(1);
+                sleep(700);
+                return false;
+            }
+        }
 
-         public Action sRW2Spin() {
-             return new SRW2Spin();
-         }
+        public Action sRW2Spin() {
+            return new SRW2Spin();
+        }
 
 
-         public class SRW2Stop implements Action {
-             @Override
+        public class SRW2Stop implements Action {
+            @Override
 
-             public boolean run(@NonNull TelemetryPacket packet) {
-                 sRW2.setPower(0);
-                 return false;
-             }
-         }
+            public boolean run(@NonNull TelemetryPacket packet) {
+                sRW2.setPower(0);
+                return false;
+            }
+        }
 
-         public Action sRW2Stop() {
-             return new SRW2Stop();
-         }
+        public Action sRW2Stop() {
+            return new SRW2Stop();
+        }
     }
 
 
 
-// Flywheel initialization
+    // Flywheel initialization
     public class MFW {
         private DcMotorEx mFW;
 
@@ -152,20 +167,39 @@ public class AutoV1_RedClose extends LinearOpMode {
             mFW.setDirection(DcMotor.Direction.FORWARD);
         }
 
-        public class MFWSpin implements Action {
+        public class MFWSpin1 implements Action {
             private boolean initialized = false;
 
 
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    mFW.setPower(1);
+                    mFW.setPower(0.8); // 0.9 when below 13, 0.8 when above
+                    sleep(500);
                     initialized = true;
                 }
                 return false;
             }
         }
-        public Action mFWSpin() {
-            return new MFWSpin();
+        public Action mFWSpin1() {
+            return new MFWSpin1();
+        }
+
+
+        public class MFWSpin2 implements Action {
+            private boolean initialized = false;
+
+
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (!initialized) {
+                    mFW.setPower(0.9);
+                    sleep(700);
+                    initialized = true;
+                }
+                return false;
+            }
+        }
+        public Action mFWSpin2() {
+            return new MFWSpin2();
         }
 
 
@@ -191,14 +225,16 @@ public class AutoV1_RedClose extends LinearOpMode {
     @Override
     public void runOpMode() {
         Pose2d initPose = new Pose2d(63.5, 24, Math.toRadians(180));
-        Pose2d shootPose = new Pose2d(-2, 9, Math.toRadians(138));
-        Pose2d intake1Pose = new Pose2d(-11, 25, Math.toRadians(90));
-        Pose2d intake2Pose = new Pose2d(-11, 29, Math.toRadians(90));
-        Pose2d intake3Pose = new Pose2d(-11, 40, Math.toRadians(90));
-        Vector2d shootVec = new Vector2d(-2, 9);
-        Vector2d intake1Vec = new Vector2d(-11, 25);
-        Vector2d intake2Vec = new Vector2d(-11, 29);
-        Vector2d intake3Vec = new Vector2d(-11, 40);
+        Pose2d shootPose = new Pose2d(-9, 10, Math.toRadians(135));
+        Pose2d intake1Pose = new Pose2d(-12, 29, Math.toRadians(90));
+        Pose2d intake2Pose = new Pose2d(-12, 35, Math.toRadians(90));
+        Pose2d intake3Pose = new Pose2d(-12, 53, Math.toRadians(90));
+
+        Vector2d shootVec = new Vector2d(-9, 10);
+        Vector2d intake1Vec = new Vector2d(-12, 29);
+        Vector2d intake2Vec = new Vector2d(-12, 35);
+        Vector2d intake3Vec = new Vector2d(-12, 53);
+
         MecanumDrive drive = new MecanumDrive(hardwareMap, initPose);
         SI sI = new SI(hardwareMap);
         SRW1 sRW1 = new SRW1(hardwareMap);
@@ -207,7 +243,7 @@ public class AutoV1_RedClose extends LinearOpMode {
 
 
         TrajectoryActionBuilder initToShoot = drive.actionBuilder(initPose)
-                .strafeToLinearHeading(shootVec, Math.toRadians(138));
+                .strafeToLinearHeading(shootVec, Math.toRadians(135));
         TrajectoryActionBuilder shootToIntake1 = drive.actionBuilder(shootPose)
                 .splineTo(intake1Vec, Math.toRadians(90));
         TrajectoryActionBuilder intake1ToIntake2 = drive.actionBuilder(intake1Pose)
@@ -215,8 +251,7 @@ public class AutoV1_RedClose extends LinearOpMode {
         TrajectoryActionBuilder intake2ToIntake3 = drive.actionBuilder(intake2Pose)
                 .splineTo(intake3Vec, Math.toRadians(90));
         TrajectoryActionBuilder intake3ToShoot = drive.actionBuilder(intake3Pose)
-                .strafeToLinearHeading(shootVec, Math.toRadians(138));
-
+                .strafeToLinearHeading(shootVec, Math.toRadians(135));
 
         if (isStopRequested())
             return;
@@ -226,38 +261,50 @@ public class AutoV1_RedClose extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
+// Shooting first 2 artifacts
                         initToShoot.build(),
-                        mFW.mFWSpin(),
+                        mFW.mFWSpin1(),
                         sRW2.sRW2Spin(),
-                        sRW2.sRW2Stop(),
-                        sRW1.sRW1Spin(),
-                        mFW.mFWStop(),
-                        sRW1.sRW1Stop(),
-                        mFW.mFWSpin(),
-                        sRW2.sRW2Spin(),
+
+                        sI.sISpin1(),
                         mFW.mFWStop(),
                         sRW2.sRW2Stop(),
 
+                        sRW1.sRW1Spin(),
+                        mFW.mFWSpin1(),
+                        sRW2.sRW2Spin(),
+                        sI.sIStop(),
+                        mFW.mFWStop(),
+                        sRW1.sRW1Stop(),
+                        sRW2.sRW2Stop(),
+
+// Intaking 2 artifacts
                         shootToIntake1.build(),
-                        sI.sISpin(),
+                        sI.sISpin1(),
                         sRW1.sRW1Spin(),
                         intake1ToIntake2.build(),
                         sRW1.sRW1Spin(),
-                        sI.sISpin(),
+                        sI.sISpin2(),
                         intake2ToIntake3.build(),
-                        sI.sIStop(),
+                        sRW1.sRW1Spin(),
 
+// Shooting second to last artifact
                         intake3ToShoot.build(),
-                        mFW.mFWSpin(),
                         sRW1.sRW1Spin(),
+                        mFW.mFWSpin2(),
                         sRW2.sRW2Spin(),
-                        sRW1.sRW1Stop(),
-                        sI.sISpin(),
+                        sRW2.sRW2Stop(),
+                        mFW.mFWStop(),
+
+// Shooting last artifact
+                        sI.sISpin1(),
                         sRW1.sRW1Spin(),
                         sI.sIStop(),
+                        mFW.mFWSpin2(),
                         sRW2.sRW2Spin(),
+                        mFW.mFWStop(),
                         sRW1.sRW1Stop(),
-                        mFW.mFWStop()
+                        sRW2.sRW2Stop()
                 )
         );
     }

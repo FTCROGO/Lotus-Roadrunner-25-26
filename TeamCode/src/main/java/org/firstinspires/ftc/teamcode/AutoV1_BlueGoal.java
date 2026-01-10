@@ -176,6 +176,7 @@ public class AutoV1_BlueGoal extends LinearOpMode {
             public boolean run (@NonNull TelemetryPacket packet) {
                 if (!initialized) {
                     mFW.setPower(0);
+                    sleep(800);
                     initialized = true;
                 }
                 return false;
@@ -191,14 +192,16 @@ public class AutoV1_BlueGoal extends LinearOpMode {
     @Override
     public void runOpMode() {
         Pose2d initPose = new Pose2d(-63.5, -48, Math.toRadians(45));
-        Pose2d shootPose = new Pose2d(-2, -9, Math.toRadians(222));
-        Pose2d intake1Pose = new Pose2d(-11, -25, Math.toRadians(270));
-        Pose2d intake2Pose = new Pose2d(-11, -29, Math.toRadians(270));
-        Pose2d intake3Pose = new Pose2d(-11, -40, Math.toRadians(270));
-        Vector2d shootVec = new Vector2d(-2, 9);
-        Vector2d intake1Vec = new Vector2d(-11, -25);
-        Vector2d intake2Vec = new Vector2d(-11, -29);
-        Vector2d intake3Vec = new Vector2d(-11, -40);
+        Pose2d shootPose = new Pose2d(-9, -2, Math.toRadians(225));
+        Pose2d intake1Pose = new Pose2d(-18, -29, Math.toRadians(270));
+        Pose2d intake2Pose = new Pose2d(-18, -33, Math.toRadians(270));
+        Pose2d intake3Pose = new Pose2d(-18, -40, Math.toRadians(270));
+
+        Vector2d shootVec = new Vector2d(-9, -2);
+        Vector2d intake1Vec = new Vector2d(-18, -29);
+        Vector2d intake2Vec = new Vector2d(-18, -33);
+        Vector2d intake3Vec = new Vector2d(-18, -40);
+
         MecanumDrive drive = new MecanumDrive(hardwareMap, initPose);
         SI sI = new SI(hardwareMap);
         SRW1 sRW1 = new SRW1(hardwareMap);
@@ -207,7 +210,7 @@ public class AutoV1_BlueGoal extends LinearOpMode {
 
 
         TrajectoryActionBuilder initToShoot = drive.actionBuilder(initPose)
-                .strafeToLinearHeading(shootVec, Math.toRadians(222));
+                .strafeToLinearHeading(shootVec, Math.toRadians(225));
         TrajectoryActionBuilder shootToIntake1 = drive.actionBuilder(shootPose)
                 .splineTo(intake1Vec, Math.toRadians(270));
         TrajectoryActionBuilder intake1ToIntake2 = drive.actionBuilder(intake1Pose)
@@ -215,7 +218,7 @@ public class AutoV1_BlueGoal extends LinearOpMode {
         TrajectoryActionBuilder intake2ToIntake3 = drive.actionBuilder(intake2Pose)
                 .splineTo(intake3Vec, Math.toRadians(270));
         TrajectoryActionBuilder intake3ToShoot = drive.actionBuilder(intake3Pose)
-                .strafeToLinearHeading(shootVec, Math.toRadians(222));
+                .strafeToLinearHeading(shootVec, Math.toRadians(315));
 
 
         if (isStopRequested())
@@ -226,18 +229,19 @@ public class AutoV1_BlueGoal extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
+// Shooting first 3 artifacts
                         initToShoot.build(),
                         mFW.mFWSpin(),
                         sRW2.sRW2Spin(),
                         sRW2.sRW2Stop(),
-                        sRW1.sRW1Spin(),
                         mFW.mFWStop(),
-                        sRW1.sRW1Stop(),
+                        sRW1.sRW1Spin(),
                         mFW.mFWSpin(),
                         sRW2.sRW2Spin(),
-                        mFW.mFWStop(),
                         sRW2.sRW2Stop(),
+                        mFW.mFWStop(),
 
+// Intaking 2 artifacts
                         shootToIntake1.build(),
                         sI.sISpin(),
                         sRW1.sRW1Spin(),
@@ -247,17 +251,24 @@ public class AutoV1_BlueGoal extends LinearOpMode {
                         intake2ToIntake3.build(),
                         sI.sIStop(),
 
+// Shooting second to last artifact
                         intake3ToShoot.build(),
-                        mFW.mFWSpin(),
                         sRW1.sRW1Spin(),
+                        mFW.mFWSpin(),
+                        sRW2.sRW2Stop(),
                         sRW2.sRW2Spin(),
-                        sRW1.sRW1Stop(),
+                        sRW2.sRW2Stop(),
+                        mFW.mFWStop(),
+
+// Shooting last artifact
                         sI.sISpin(),
                         sRW1.sRW1Spin(),
                         sI.sIStop(),
-                        sRW2.sRW2Spin(),
+                        mFW.mFWSpin(),
                         sRW1.sRW1Stop(),
-                        mFW.mFWStop()
+                        sRW2.sRW2Spin(),
+                        mFW.mFWStop(),
+                        sRW2.sRW2Stop()
                 )
         );
     }

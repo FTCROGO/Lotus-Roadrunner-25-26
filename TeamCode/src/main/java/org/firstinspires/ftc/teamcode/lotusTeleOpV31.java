@@ -18,10 +18,10 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import java.util.List;
 
 
-@TeleOp(name = "Robot: lotusTeleOPV3", group = "Robot")
+@TeleOp(name = "Robot: lotusTeleOpV31", group = "Robot")
 
 
-public class lotusTeleOPV3 extends LinearOpMode {
+public class lotusTeleOpV31 extends LinearOpMode {
     public DcMotor mFL = null;
 
 
@@ -267,9 +267,9 @@ public class lotusTeleOPV3 extends LinearOpMode {
 
                 YawPitchRollAngles angle = imu.getRobotYawPitchRollAngles();
 
-//                if (distance < 1.35 && distance > 0.58 && angle > x && angle < y
+//                if (distance < 1.35 && distance > 0.58 && angle > x && angle < y 
 //                        || distance > 1.75 && distance < 1.93 && angle > x && angle < y) {
-//
+//                    
 //                    led.setPosition(0.5);
 //                } else {
 //                    led.setPosition(0.2);
