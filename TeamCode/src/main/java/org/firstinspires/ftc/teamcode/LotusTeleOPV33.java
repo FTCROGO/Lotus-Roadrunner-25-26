@@ -21,7 +21,7 @@ import java.util.List;
 @TeleOp(name = "Robot: lotusTeleOPV3", group = "Robot")
 
 
-public class lotusTeleOPV3 extends LinearOpMode {
+public class LotusTeleOPV33 extends LinearOpMode {
     public DcMotor mFL = null;
 
 
@@ -266,6 +266,7 @@ public class lotusTeleOPV3 extends LinearOpMode {
                 }
 
                 YawPitchRollAngles angle = imu.getRobotYawPitchRollAngles();
+                telemetry.addData("angle", "%.2f", angle);
 
 //                if (distance < 1.35 && distance > 0.58 && angle > x && angle < y
 //                        || distance > 1.75 && distance < 1.93 && angle > x && angle < y) {
@@ -300,29 +301,4 @@ public class lotusTeleOPV3 extends LinearOpMode {
         LimeLight.stop();
     }
 }
-
-
-/// / Telemetry
-/// /            telemetry.addData("sRW2 Position", "%.2f", sRW2.getPosition());   --> needs to be non-CR
-/// /            telemetry.addData("sH Position", "%.2f", sH.getPosition());
-            telemetry.addData("angle", "%.2f", angle);
-//            telemetry.addData("rw2 power", "%.2f", sRW2.getPower());
-////            telemetry.addData("fw power", "%.")
-            telemetry.update();
-
-
-// Telemetry
-
-
-//            telemetry.addData("zDifference", ".%2f", zDifference);
-//            telemetry.update();
-//
-//
-//        }
-//    }
-//}
-
-
-
-
 
