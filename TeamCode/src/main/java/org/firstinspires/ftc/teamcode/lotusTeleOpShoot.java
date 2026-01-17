@@ -21,6 +21,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import java.util.List;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+//this is for timer!
+
 
     @TeleOp(name = "Robot: lotusTeleOpShoot", group = "Robot")
 
@@ -41,7 +44,9 @@ import java.util.List;
 
 
         public IMU imu;
-
+        boolean mFWOn = false;
+        //ElapsedTime flywheelTimer = new ElapsedTime();
+        //this is also for timer
 
         @Override
         public void runOpMode() {
@@ -79,7 +84,7 @@ import java.util.List;
             double targetRPM = 4200;
             double targetTicksPerSec = targetRPM * ticksPerRev / 60.0;
 
-            boolean mFWOn;
+
 
 
             mFL = hardwareMap.get(DcMotor.class, "leftFront");
@@ -90,15 +95,44 @@ import java.util.List;
             DcMotorEx mFW;
             mFW = hardwareMap.get(DcMotorEx.class, "mFW");
             mFW.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            mFWOn = false;
 
+
+            //this module is for controlling on/off button of flywheel
             if (gamepad1.leftBumperWasPressed()) {
                 mFWOn = !mFWOn; // flip state
             }
-
+            if (mFWOn) {
+                mFW.setVelocity(targetTicksPerSec);
+            } else {
+                mFW.setVelocity(0);
+            }
+            telemetry.addData("Flywheel", mFWOn ? "ON" : "OFF");
             telemetry.addData("RPM", mFW.getVelocity() * 60.0 / ticksPerRev);
 
-
+            //we put a timer for this module to control how long the flywheel will run
+            //for testing, remember to comment other module out
+//            if (gamepad1.leftBumperWasPressed()) {
+//                mFWOn = !mFWOn; // flip state
+//
+//                if (mFWOn) {
+//                    flywheelTimer.reset(); // start counting from 0
+//                }
+//            }
+//
+//            if (mFWOn) {
+//                // run for 30 seconds, then turn off
+//                if (flywheelTimer.seconds() >= 30) {
+//                    mFWOn = false;
+//                } else {
+//                    mFW.setVelocity(targetTicksPerSec);
+//                }
+//            } else {
+//                mFW.setVelocity(0);
+//            }
+//
+//            telemetry.addData("Flywheel", mFWOn ? "ON" : "OFF");
+//            telemetry.addData("RPM", mFW.getVelocity() * 60.0 / ticksPerRev);
+//            telemetry.addData("Time", flywheelTimer.seconds());
 
 
             sI = hardwareMap.get(CRServo.class, "sI");
@@ -290,7 +324,7 @@ import java.util.List;
                     double angle = imu.getRobotYawPitchRollAngles().getYaw();
                     telemetry.addData("angle", "%.2f", angle);
 
-                    telemetry.addData("RPM", mFW.getVelocity() * 60.0 / ticksPerRev);
+//                    telemetry.addData("RPM", mFW.getVelocity() * 60.0 / ticksPerRev);
 
 
 //                if (distance < 1.35 && distance > 0.58 && angle > x && angle < y
