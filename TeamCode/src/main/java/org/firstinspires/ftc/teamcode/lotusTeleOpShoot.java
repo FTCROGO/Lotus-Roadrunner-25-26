@@ -45,7 +45,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
         public IMU imu;
         boolean mFWOn = false;
-        //ElapsedTime flywheelTimer = new ElapsedTime();
+        ElapsedTime flywheelTimer = new ElapsedTime();
         //this is also for timer
 
         @Override
@@ -81,7 +81,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             double counterFW = 1;
 
             double ticksPerRev = 537.7; // example: goBILDA 5202/5203
-            double targetRPM = 4200;
+            double targetRPM = 600;
             double targetTicksPerSec = targetRPM * ticksPerRev / 60.0;
 
 
@@ -96,43 +96,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             mFW = hardwareMap.get(DcMotorEx.class, "mFW");
             mFW.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-
-            //this module is for controlling on/off button of flywheel
-            if (gamepad1.leftBumperWasPressed()) {
-                mFWOn = !mFWOn; // flip state
-            }
-            if (mFWOn) {
-                mFW.setVelocity(targetTicksPerSec);
-            } else {
-                mFW.setVelocity(0);
-            }
-            telemetry.addData("Flywheel", mFWOn ? "ON" : "OFF");
-            telemetry.addData("RPM", mFW.getVelocity() * 60.0 / ticksPerRev);
-
-            //we put a timer for this module to control how long the flywheel will run
-            //for testing, remember to comment other module out
-//            if (gamepad1.leftBumperWasPressed()) {
-//                mFWOn = !mFWOn; // flip state
-//
-//                if (mFWOn) {
-//                    flywheelTimer.reset(); // start counting from 0
-//                }
-//            }
-//
-//            if (mFWOn) {
-//                // run for 30 seconds, then turn off
-//                if (flywheelTimer.seconds() >= 30) {
-//                    mFWOn = false;
-//                } else {
-//                    mFW.setVelocity(targetTicksPerSec);
-//                }
-//            } else {
-//                mFW.setVelocity(0);
-//            }
-//
-//            telemetry.addData("Flywheel", mFWOn ? "ON" : "OFF");
-//            telemetry.addData("RPM", mFW.getVelocity() * 60.0 / ticksPerRev);
-//            telemetry.addData("Time", flywheelTimer.seconds());
 
 
             sI = hardwareMap.get(CRServo.class, "sI");
@@ -187,6 +150,44 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
             while (opModeIsActive()) {
+//                //this module is for controlling on/off button of flnywheel
+//
+//                if (gamepad1.leftBumperWasPressed()) {
+//                    mFWOn = !mFWOn; // flip state
+//                }
+//                if (mFWOn) {
+//                    mFW.setVelocity(targetTicksPerSec);
+//                }
+//                else {
+//                    mFW.setVelocity(0);
+//                }
+//                telemetry.addData("Flywheel", mFWOn ? "ON" : "OFF");
+//                telemetry.addData("RPM", mFW.getVelocity() * 60.0 / ticksPerRev);
+
+                //we put a timer for this module to control how long the flywheel will run
+               // for testing, remember to comment other module out
+            if (gamepad1.leftBumperWasPressed()) {
+                mFWOn = !mFWOn; // flip state
+
+                if (mFWOn) {
+                    flywheelTimer.reset(); // start counting from 0
+                }
+            }
+
+            if (mFWOn) {
+                // run for 30 seconds, then turn off
+                if (flywheelTimer.seconds() >= 5) {
+                    mFWOn = false;
+                } else {
+                    mFW.setVelocity(targetTicksPerSec);
+                }
+            } else {
+                mFW.setVelocity(0);
+            }
+
+            telemetry.addData("Flywheel", mFWOn ? "ON" : "OFF");
+            telemetry.addData("RPM", mFW.getVelocity() * 60.0 / ticksPerRev);
+            telemetry.addData("Time", flywheelTimer.seconds());
 
 
 // Drivetrain - gamepad 1: left stick y (drive), left stick x (strafe), right stick x (turn)
