@@ -12,9 +12,9 @@ public class PIDFTunerTest extends OpMode {
 
     public DcMotorEx flywheelMotor;
 
-    public double highVelocity = 1500;
+    public double highVelocity = 1000;
 
-    public double lowVelocity = 900;
+    public double lowVelocity = 250;
 
     double curTargetVelocity = highVelocity;
 
@@ -27,9 +27,9 @@ public class PIDFTunerTest extends OpMode {
 
     @Override
     public void init() {
-        flywheelMotor = hardwareMap.get(DcMotorEx.class, "motor");
+        flywheelMotor = hardwareMap.get(DcMotorEx.class, "mFW");
         flywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        flywheelMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        flywheelMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P, 0, 0, F);
         flywheelMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
