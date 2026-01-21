@@ -17,6 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import java.util.List;
@@ -80,11 +81,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             double counterRW2x = 1;
             double counterFW = 1;
 
-            double ticksPerRev = 537.7; // example: goBILDA 5202/5203
-            double targetRPM = 600;
-            double targetTicksPerSec = targetRPM * ticksPerRev / 60.0;
-
-
+            //double ticksPerRev = 537.7; // example: goBILDA 5202/5203
+            //double targetRPM = 600;
+            //double targetTicksPerSec = targetRPM * ticksPerRev / 60.0;
+            double targetTicksPerSec = 100;//maximum is 2340
+            //variables for PIDF stuff
+            double F = 17;
+            double P = 29;
 
 
             mFL = hardwareMap.get(DcMotor.class, "leftFront");
@@ -150,44 +153,47 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
             while (opModeIsActive()) {
-//                //this module is for controlling on/off button of flnywheel
-//
-//                if (gamepad1.leftBumperWasPressed()) {
-//                    mFWOn = !mFWOn; // flip state
-//                }
-//                if (mFWOn) {
-//                    mFW.setVelocity(targetTicksPerSec);
-//                }
-//                else {
-//                    mFW.setVelocity(0);
-//                }
-//                telemetry.addData("Flywheel", mFWOn ? "ON" : "OFF");
-//                telemetry.addData("RPM", mFW.getVelocity() * 60.0 / ticksPerRev);
+//                //this module is for controlling on/off button of flywheel
+
+                if (gamepad1.leftBumperWasPressed()) {
+                    mFWOn = !mFWOn; // flip state
+                }
+                if (mFWOn) {
+                    mFW.setVelocity(targetTicksPerSec);
+                    PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P, 0, 0, F);
+                    mFW.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
+                }
+                else {
+                    mFW.setVelocity(0);
+                }
+                telemetry.addData("Flywheel", mFWOn ? "ON" : "OFF");
+                telemetry.addData("ticksPerRev", mFW.getVelocity());
+                //telemetry.addData("RPM", mFW.getVelocity() * 60.0 / ticksPerRev);
 
                 //we put a timer for this module to control how long the flywheel will run
                // for testing, remember to comment other module out
-            if (gamepad1.leftBumperWasPressed()) {
-                mFWOn = !mFWOn; // flip state
-
-                if (mFWOn) {
-                    flywheelTimer.reset(); // start counting from 0
-                }
-            }
-
-            if (mFWOn) {
-                // run for 30 seconds, then turn off
-                if (flywheelTimer.seconds() >= 5) {
-                    mFWOn = false;
-                } else {
-                    mFW.setVelocity(targetTicksPerSec);
-                }
-            } else {
-                mFW.setVelocity(0);
-            }
-
-            telemetry.addData("Flywheel", mFWOn ? "ON" : "OFF");
-            telemetry.addData("RPM", mFW.getVelocity() * 60.0 / ticksPerRev);
-            telemetry.addData("Time", flywheelTimer.seconds());
+//            if (gamepad1.leftBumperWasPressed()) {
+//                mFWOn = !mFWOn; // flip state
+//
+//                if (mFWOn) {
+//                    flywheelTimer.reset(); // start counting from 0
+//                }
+//            }
+//
+//            if (mFWOn) {
+//                // run for 30 seconds, then turn off
+//                if (flywheelTimer.seconds() >= 5) {
+//                    mFWOn = false;
+//                } else {
+//                    mFW.setVelocity(targetTicksPerSec);
+//                }
+//            } else {
+//                mFW.setVelocity(0);
+//            }
+//
+//            telemetry.addData("Flywheel", mFWOn ? "ON" : "OFF");
+//            telemetry.addData("RPM", mFW.getVelocity() * 60.0 / ticksPerRev);
+//            telemetry.addData("Time", flywheelTimer.seconds());
 
 
 // Drivetrain - gamepad 1: left stick y (drive), left stick x (strafe), right stick x (turn)

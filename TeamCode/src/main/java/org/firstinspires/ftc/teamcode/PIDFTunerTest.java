@@ -12,9 +12,9 @@ public class PIDFTunerTest extends OpMode {
 
     public DcMotorEx flywheelMotor;
 
-    public double highVelocity = 1000;
+    public double highVelocity = 5000;
 
-    public double lowVelocity = 250;
+    public double lowVelocity = 500;
 
     double curTargetVelocity = highVelocity;
 
@@ -23,6 +23,7 @@ public class PIDFTunerTest extends OpMode {
 
     double[] stepSizes = {10.0, 1.0, 0.1, 0.001, 0.0001};
 
+    double maxTicksPerSec;
     int stepIndex = 1;
 
     @Override
@@ -41,6 +42,10 @@ public class PIDFTunerTest extends OpMode {
         // get all our gamepad commands
         // set target velocity
         //update telemetry
+
+        //getting maximum tick per revolution
+        flywheelMotor.setPower(1.0);
+        maxTicksPerSec = flywheelMotor.getVelocity();
 
         if(gamepad1.yWasPressed()) {
             if (curTargetVelocity == highVelocity) {
@@ -76,6 +81,7 @@ public class PIDFTunerTest extends OpMode {
         double curVelocity = flywheelMotor.getVelocity();
         double error = curTargetVelocity - curVelocity;
 
+        telemetry.addData("Maximum Ticks Per Revolution", maxTicksPerSec);
         telemetry.addData("Target Velocity", curTargetVelocity);
         telemetry.addData("Current Velocity", "%.2f", curVelocity);
         telemetry.addData("Error", "%.2f", error);
