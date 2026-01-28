@@ -17,7 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 import java.util.List;
 
-@TeleOp(name = "Lotus TeleOp: Aim+Pose+RPM", group = "Robot")
+@TeleOp(name = "TeleOpAimPoseRPM", group = "Robot")
 public class TeleOpAimPoseRPM extends LinearOpMode {
 
     // =========================
