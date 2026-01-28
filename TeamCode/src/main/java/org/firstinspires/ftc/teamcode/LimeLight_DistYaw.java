@@ -25,7 +25,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 import java.util.List;
 
-@TeleOp(name="LL Tag Distance + Robot Angle", group="Test")
+@TeleOp(name="LimeLight_DistYaw", group="Robot")
 public class LimeLight_DistYaw extends LinearOpMode {
 
     private DcMotor mFL;
@@ -36,7 +36,7 @@ public class LimeLight_DistYaw extends LinearOpMode {
     private IMU imu;
 
     // Change this to the tag you care about (example: blue=20, red=24)
-    private static final int TARGET_TAG_ID = 20;
+    private static final int TARGET_TAG_ID = 24;
 
     @Override
     public void runOpMode() {
