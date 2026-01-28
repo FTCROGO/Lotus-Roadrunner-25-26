@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -12,7 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
     // MaxSpeed without using Encoder (code example from ChatGPT)
 
-    @TeleOp(name="Flywheel Max Speed Test")
+    @TeleOp(name="Motor_MaxSpeed", group = "Robot")
     public class Motor_MaxSpeed extends LinearOpMode {
 
         // goBILDA 5203 motor encoder counts per MOTOR revolution
