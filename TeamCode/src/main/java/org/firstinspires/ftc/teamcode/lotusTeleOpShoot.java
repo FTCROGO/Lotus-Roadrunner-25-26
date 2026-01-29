@@ -84,10 +84,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             //double ticksPerRev = 537.7; // example: goBILDA 5202/5203
             //double targetRPM = 600;
             //double targetTicksPerSec = targetRPM * ticksPerRev / 60.0;
-            double targetTicksPerSec = 100;//maximum is 2340
+            double targetTicksPerSec = 200;//maximum is 2340
             //variables for PIDF stuff
-            double F = 17;
-            double P = 29;
+            double F = 13;
+            double P = 61;
 
 
             mFL = hardwareMap.get(DcMotor.class, "leftFront");
@@ -159,15 +159,15 @@ import com.qualcomm.robotcore.util.ElapsedTime;
                     mFWOn = !mFWOn; // flip state
                 }
                 if (mFWOn) {
-                    mFW.setVelocity(targetTicksPerSec);
                     PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P, 0, 0, F);
                     mFW.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
+                    mFW.setVelocity(targetTicksPerSec);
                 }
                 else {
                     mFW.setVelocity(0);
                 }
                 telemetry.addData("Flywheel", mFWOn ? "ON" : "OFF");
-                telemetry.addData("ticksPerRev", mFW.getVelocity());
+                telemetry.addData("ticksPerSec", mFW.getVelocity());
                 //telemetry.addData("RPM", mFW.getVelocity() * 60.0 / ticksPerRev);
 
                 //we put a timer for this module to control how long the flywheel will run

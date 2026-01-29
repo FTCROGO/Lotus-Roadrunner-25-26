@@ -41,8 +41,8 @@ public class LimeLight_AprilTag extends LinearOpMode {
     public CRServo sI = null;
     public CRServo sRW1 = null;
     public CRServo sRW2 = null;     //RW --> RW2, consider changing to non-CR
-//    public Servo sH = null;
-public IMU imu;
+    //    public Servo sH = null;
+    public IMU imu;
     boolean mFWOn = false;
     ElapsedTime flywheelTimer = new ElapsedTime();
     //this is also for timer
@@ -89,7 +89,6 @@ public IMU imu;
         mFW.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
-
         sI = hardwareMap.get(CRServo.class, "sI");
         sRW1 = hardwareMap.get(CRServo.class, "sRW1");
         sRW2 = hardwareMap.get(CRServo.class, "sRW2");
@@ -105,5 +104,7 @@ public IMU imu;
         sI.setDirection(CRServo.Direction.REVERSE);
         sRW1.setDirection(CRServo.Direction.REVERSE);
         sRW2.setDirection(CRServo.Direction.REVERSE);
+    }
+}
 
 

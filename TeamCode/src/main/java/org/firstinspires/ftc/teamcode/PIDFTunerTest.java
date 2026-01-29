@@ -12,7 +12,7 @@ public class PIDFTunerTest extends OpMode {
 
     public DcMotorEx flywheelMotor;
 
-    public double highVelocity = 2500;
+    public double highVelocity = 2800; //tickspersecond
 
     public double lowVelocity = 200;
 
