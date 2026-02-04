@@ -54,11 +54,11 @@ public class TeleOpAimPoseRPM_debug extends LinearOpMode {
     // =========================
 
     // Center height of Blue (20) / Red (24) goal AprilTags above TILE surface
-    // 38.75 in (panel top) - 4.5 in (tag center offset)
-    private static final double GOAL_TAG_CENTER_HEIGHT_IN = 34.25;  // Check the Tag height (in)??
+    // 38.75 in (panel top) - 4.5 in (tag center offset)=34.25
+    private static final double GOAL_TAG_CENTER_HEIGHT_IN = 29.49;  // Check the Tag height (in)??
 
     // Measure these on YOUR robot
-    private static final double LL_LENS_HEIGHT_IN = 10.5;     // camera lens center above tile??
+    private static final double LL_LENS_HEIGHT_IN = 12;     // camera lens center above tile??
     private static final double LL_MOUNT_ANGLE_DEG = 0;    // camera pitch up from horizontal
 
     // =========================
