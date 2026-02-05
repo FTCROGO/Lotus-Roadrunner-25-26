@@ -118,9 +118,9 @@ public class TeleOpAimPoseRPM_debug extends LinearOpMode {
             LLResult result = limelight.getLatestResult();
             debugPrintAllTags(result);
 
-            if (gamepad1.a) {
+            //if (gamepad1.a) {
                 updateLimelightDiagnosticsTelemetry(goalTagId);
-            }
+            //}
 
             // 3) Flywheel RPM tuning
             updateFlywheelRPMControls();
@@ -172,7 +172,7 @@ public class TeleOpAimPoseRPM_debug extends LinearOpMode {
 
         // Limelight
         limelight = hardwareMap.get(Limelight3A.class, "LimeLight");
-        limelight.pipelineSwitch(0);  // AprilTag pipeline
+        limelight.pipelineSwitch(7);  // AprilTag pipeline
         limelight.start();
     }
 
@@ -362,10 +362,10 @@ public class TeleOpAimPoseRPM_debug extends LinearOpMode {
         }
 
         StringBuilder sb = new StringBuilder();
-        for (LLResultTypes.FiducialResult f : fiducials) {
+        for (LLResultTypes.FiducialResult fs : fiducials) {
             sb.append("ID ")
-                    .append(f.getFiducialId())
-                    .append(String.format("(tx=%.1f°) ", f.getTargetXDegrees()));
+                    .append(fs.getFiducialId())
+                    .append(String.format("(tx=%.1f°) ", fs.getTargetXDegrees()));
         }
 
         telemetry.addData("LL Tags", sb.toString());
@@ -484,12 +484,12 @@ public class TeleOpAimPoseRPM_debug extends LinearOpMode {
             int id = f.getFiducialId();
             double tx = f.getTargetXDegrees();
             double ty = f.getTargetYDegrees();
-            double area = f.getTargetArea();   // ONLY if this method exists-- test??
+           // double area = f.getTargetArea();   // ONLY if this method exists-- test??
 
             telemetry.addData(
                     "Tag " + id,
-                    "tx=%.1f° ty=%.1f° area=%.2f",
-                    tx, ty, area
+                    "tx=%.1f° ty=%.1f°",
+                    tx, ty
             );
 
             if (id == goalTagId) {
@@ -525,11 +525,9 @@ public class TeleOpAimPoseRPM_debug extends LinearOpMode {
                 heightDiffIn / Math.tan(angleToGoalRad);
 
         telemetry.addData(
-                "TrigDist(2D) → Goal %d",
+                String.format("TrigDist(2D) → Goal %d", goalTagId),
                 "%.1f in  (angle=%.1f°)",
-                goalTagId,
-                distanceIn,
-                angleToGoalDeg
+                distanceIn, angleToGoalDeg
         );
     }
 
