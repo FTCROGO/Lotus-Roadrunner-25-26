@@ -56,7 +56,7 @@ public class PinpointOdometry_example extends LinearOpMode {
 
         // Offsets from robot center (mm)
         // Replace with your measured values
-        pinpoint.setOffsets(0, 0, DistanceUnit.MM);
+        pinpoint.setOffsets(-114.3, 38.1, DistanceUnit.MM);
 // X pod left(+)/right(-)
 // Y pod forward(+)/back(-)
         telemetry.addLine("Pinpoint initialized.");
