@@ -51,7 +51,7 @@ public class TeleOpAimPoseRPM_speedFunc extends LinearOpMode {
     private static final double GOAL_TAG_CENTER_HEIGHT_IN = 29.49; // measured in the field
 
     // Measure these on YOUR robot:
-    private static final double LL_LENS_HEIGHT_IN = 14;   // lens center height above tile (measured; original=12 inches)
+    private static final double LL_LENS_HEIGHT_IN = 14;   // lens center height above tile (measured; original=12 inches); may need adjust the regression
     private static final double LL_MOUNT_ANGLE_DEG = 0;  // camera pitch up from horizontal
     //private static final double LL_LATERAL_OFFSET_IN = 6.5; // camera from the center of the robot (lateral; Y axis (Y+=left): -6.5 inches)
 
