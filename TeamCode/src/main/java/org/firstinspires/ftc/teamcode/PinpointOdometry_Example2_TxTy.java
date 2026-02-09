@@ -21,34 +21,35 @@ public class PinpointOdometry_Example2_TxTy extends LinearOpMode {
     private static final long TIMEOUT_MS = 5000;   // safety timeout per move
 
     // ===== Target distances (meters) =====
-    private static final double TARGET_X_M = 0.50; // forward
+    private static final double TARGET_X_M = 0.80; // forward
     private static final double TARGET_Y_M = 0.30; // left
 
     // ===== Max power =====
-    private static final double MAX_POWER = 0.35;
+    private static final double MAX_POWER = 0.8
+            ;
 
     // Hardware
-    private DcMotor fl, fr, bl, br;
+    private DcMotor mFL, mFR, mBL, mBR;
     private GoBildaPinpointDriver pinpoint;
 
     @Override
     public void runOpMode() {
 
         // --- Drive motors (rename to match your config) ---
-        fl = hardwareMap.get(DcMotor.class, "fl");
-        fr = hardwareMap.get(DcMotor.class, "fr");
-        bl = hardwareMap.get(DcMotor.class, "bl");
-        br = hardwareMap.get(DcMotor.class, "br");
+        mFL = hardwareMap.get(DcMotor.class, "leftFront");
+        mFR = hardwareMap.get(DcMotor.class, "rightFront");
+        mBL = hardwareMap.get(DcMotor.class, "leftBack");
+        mBR = hardwareMap.get(DcMotor.class, "rightBack");
 
         // Common mecanum direction pattern
-        fr.setDirection(DcMotor.Direction.REVERSE);
-        br.setDirection(DcMotor.Direction.REVERSE);
+        mFR.setDirection(DcMotor.Direction.REVERSE);
+        mBR.setDirection(DcMotor.Direction.REVERSE);
 
         // Optional: braking helps stop closer to target
-        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // --- Pinpoint ---
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, PINPOINT_NAME);
@@ -167,17 +168,17 @@ public class PinpointOdometry_Example2_TxTy extends LinearOpMode {
             pFL /= max; pFR /= max; pBL /= max; pBR /= max;
         }
 
-        fl.setPower(pFL);
-        fr.setPower(pFR);
-        bl.setPower(pBL);
-        br.setPower(pBR);
+        mFL.setPower(pFL);
+        mFR.setPower(pFR);
+        mBL.setPower(pBL);
+        mBR.setPower(pBR);
     }
 
     private void stopDrive() {
-        fl.setPower(0);
-        fr.setPower(0);
-        bl.setPower(0);
-        br.setPower(0);
+        mFL.setPower(0);
+        mFR.setPower(0);
+        mBL.setPower(0);
+        mBR.setPower(0);
     }
 
     private double clip(double v, double lo, double hi) {
