@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -25,7 +25,7 @@ import java.util.List;
 import com.qualcomm.robotcore.util.ElapsedTime;
 //this is for timer!
 
-
+@Disabled
 @TeleOp(name = "LimeLight_AprilTag", group = "Robot")
 
 

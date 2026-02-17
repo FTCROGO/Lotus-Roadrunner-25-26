@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,7 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 
     // MaxSpeed without using Encoder (code example from ChatGPT)
-
+    @Disabled
     @TeleOp(name="Motor_MaxSpeed", group = "Robot")
     public class Motor_MaxSpeed extends LinearOpMode {
 

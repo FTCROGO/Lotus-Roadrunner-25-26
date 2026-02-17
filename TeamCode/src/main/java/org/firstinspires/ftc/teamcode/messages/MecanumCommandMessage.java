@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.messages;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
+@Disabled
 public final class MecanumCommandMessage {
     public long timestamp;
     public double voltage;

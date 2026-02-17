@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode.messages;
 
 import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import java.util.List;
-
+@Disabled
 public final class TankLocalizerInputsMessage {
     public long timestamp;
     public PositionVelocityPair[] left;

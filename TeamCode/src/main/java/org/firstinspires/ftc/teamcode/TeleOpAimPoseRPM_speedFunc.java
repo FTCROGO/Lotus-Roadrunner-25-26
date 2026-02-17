@@ -4,6 +4,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -20,7 +21,7 @@ import java.util.List;
 
 // Commented out: Predicted RPM from exponential model: y = A * B^x
 // Commented out: additional adjustment for aim assist
-
+@Disabled
 @TeleOp(name = "TeleOpAimPoseRPM_speedFunc", group = "Robot")
 public class TeleOpAimPoseRPM_speedFunc extends LinearOpMode {
 

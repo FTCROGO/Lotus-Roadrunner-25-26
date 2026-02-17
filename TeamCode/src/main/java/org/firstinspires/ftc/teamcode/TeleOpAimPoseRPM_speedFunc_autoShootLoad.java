@@ -4,6 +4,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -32,6 +33,7 @@ import java.util.List;
  * 3) Auto-Load / Auto-Hold (LT or hold mode after release)
  * 4) Manual controls
  */
+@Disabled
 @TeleOp(name = "TeleOpAimPoseRPM_speedFunc_autoShootLoad", group = "Robot")
 public class TeleOpAimPoseRPM_speedFunc_autoShootLoad extends LinearOpMode {
 
