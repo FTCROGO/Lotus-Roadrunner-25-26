@@ -29,6 +29,7 @@ public class lotusTeleOpV4 extends LinearOpMode {
     public Limelight3A limeLight;
     public Servo sLED;
     public PinpointLocalizer pinpoint;
+    public ColorSensor
 
     @Override
     public void runOpMode() {
@@ -42,6 +43,13 @@ public class lotusTeleOpV4 extends LinearOpMode {
         double counterLM = 1;
         double counterG = 1;
         double counterF = 1;
+        double outGate = 0.55;
+        double inGate = -1.0;
+        double outFlicker = -1.0;
+        double inFlicker = 1.0;
+        int position1 = 1;
+        int position2 = 2;
+        int position3 = 3;
 
 
         mFL = hardwareMap.get(DcMotor.class, "leftFront");
@@ -73,8 +81,12 @@ public class lotusTeleOpV4 extends LinearOpMode {
         sG.setDirection(Servo.Direction.REVERSE);
         sF.setDirection(Servo.Direction.REVERSE);
 
-        sG.setPosition(0.4);
-        sF.setPosition(-1);
+        mLM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        mLM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        mLM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        sG.setPosition(outGate);
+        sF.setPosition(outFlicker);
 
         RevHubOrientationOnRobot orientation = new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
@@ -165,21 +177,31 @@ public class lotusTeleOpV4 extends LinearOpMode {
                 counterLM += 1;
             }
             if (counterLM % 2 == 0) {
-                mLM.setPower(0.1);
+                mLM.setPower(0.8);
             }
             if (counterLM % 2 == 1) {
                 mLM.setPower(0.0);
             }
+
+//            if (gamepad1.dpadUpWasPressed()) {
+//                mLM.setTargetPosition(position1);
+//            }
+//            if (gamepad1.dpadRightWasPressed()) {
+//                mLM.setTargetPosition(position2);
+//            }
+//            if (gamepad1.dpadDownWasPressed()) {
+//                mLM.setTargetPosition(position3);
+//            }
 
 // Gate - gamepad 2: left bumper (start & stop)
             if (gamepad2.rightBumperWasPressed()) {
                 counterG += 1;
             }
             if (counterG % 2 == 0) {
-                sG.setPosition(1.0);
+                sG.setPosition(inGate);
             }
             if (counterG % 2 == 1) {
-                sG.setPosition(-0.3);
+                sG.setPosition(outGate);
             }
 
 // Flicker - gamepad 2: left bumper (start & stop)
@@ -187,11 +209,14 @@ public class lotusTeleOpV4 extends LinearOpMode {
                 counterF += 1;
             }
             if (counterF % 2 == 0) {
-                sF.setPosition(1.0);
+                sF.setPosition(inFlicker);
+                sF.setPosition(outFlicker);
             }
             if (counterF % 2 == 1)
-                sF.setPosition(-1.0);
+                sF.setPosition(outFlicker);
             }
+
+
 
 //            LLResult result = LimeLight.getLatestResult();
 //
@@ -252,7 +277,8 @@ public class lotusTeleOpV4 extends LinearOpMode {
 //            telemetry.addData("counterF", "%.2f", counterF);
 //            telemetry.addData("sG position", "%.2f", sG.getPower());
 //            telemetry.addData("sF", "%.2f", sF.getPower());
-//            telemetry.update();
+            telemetry.addData("lm encoder", "%.2f", mLM.getCurrentPosition());
+            telemetry.update();
         }
     }
 //        LimeLight.stop();
