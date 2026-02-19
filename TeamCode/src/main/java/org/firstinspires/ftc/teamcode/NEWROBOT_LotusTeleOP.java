@@ -49,16 +49,16 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
     private static final double LL_LATERAL_OFFSET_IN = 5;        // camera from robot center (inches)
 
     // -------- Flywheel speed prediction model (distanceIn inches -> rpm) --------
-    // Linear regression: y=16.57766x+2602.65546
-    private static final double RPM_SLOPE = 16.57766; //may need to redo equation
-    private static final double RPM_INTERCEPT = 2602.65546;
+    // Linear regression: y=5.51221x+3022.06487
+    private static final double RPM_SLOPE = 5.51221; //may need to redo equation
+    private static final double RPM_INTERCEPT = 3022.06487;
 
     private static final double PRED_RPM_MIN = 1500;
     private static final double PRED_RPM_MAX = 5800;
 
     // Manual fallback RPMs if goal not seen
-    private static final double MANUAL_RPM_UP = 3800;    // near
-    private static final double MANUAL_RPM_DOWN = 5000;  // far
+    private static final double MANUAL_RPM_UP = 3300;    // near
+    private static final double MANUAL_RPM_DOWN = 3900;  // far
 
     // ---------------- LED light -------------------
     private static final double LED_GREEN_POS = 0.5;   // Green
