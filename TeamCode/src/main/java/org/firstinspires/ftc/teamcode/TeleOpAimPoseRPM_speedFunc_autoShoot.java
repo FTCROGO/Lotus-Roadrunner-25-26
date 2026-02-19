@@ -4,6 +4,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -25,7 +26,7 @@ import java.util.List;
 //        Uses flywheel RPM dip detection to feed until a shot is detected,
 //        then gate-hold, restage, recover, and repeat.
 //        Auto & manual never fight over servos.
-
+@Disabled
 @TeleOp(name = "TeleOpAimPoseRPM_speedFunc_autoShoot", group = "Robot")
 public class TeleOpAimPoseRPM_speedFunc_autoShoot extends LinearOpMode {
 

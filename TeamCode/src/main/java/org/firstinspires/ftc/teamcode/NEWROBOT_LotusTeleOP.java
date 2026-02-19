@@ -3,6 +3,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -16,7 +17,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import java.util.List;
-
+@Disabled
 @TeleOp(name = "NEWROBOT_LotusTeleOp", group = "Robot")
 public class NEWROBOT_LotusTeleOP extends LinearOpMode {
 
@@ -36,7 +37,7 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
     // =========================
     private static final double TICKS_PER_REV = 28;       // change to your motor spec!
     private static final int BLUE_GOAL_TAG_ID = 20;
-    private static final int RED_GOAL_TAG_ID  = 24;
+    private static final int RED_GOAL_TAG_ID = 24;
 
     // Aim assist tuning
     private static final double AIM_KP = 0.02;
@@ -76,7 +77,6 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
     private double flywheelTargetRPM = MANUAL_RPM_UP;
     private double lastPredictedRPM = MANUAL_RPM_UP;
     private double manualFallbackRPM = MANUAL_RPM_UP;
-
 
 
     // For field-centric drive
@@ -119,6 +119,7 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
 
         limelight.stop();
     }
+
     // =========================================================
     // HARDWARE INIT
     // =========================================================
@@ -159,6 +160,7 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
         // LED (servo-like controller)
         sLED = hardwareMap.get(Servo.class, "sLED");
     }
+
     // =========================================================
     // DRIVE + AIM ASSIST
     // =========================================================
@@ -221,7 +223,12 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
         // Normalize
         double max = Math.max(Math.max(Math.abs(pFL), Math.abs(pFR)),
                 Math.max(Math.abs(pBL), Math.abs(pBR)));
-        if (max > 1.0) { pFL /= max; pFR /= max; pBL /= max; pBR /= max; }
+        if (max > 1.0) {
+            pFL /= max;
+            pFR /= max;
+            pBL /= max;
+            pBR /= max;
+        }
 
         mFL.setPower(pFL);
         mFR.setPower(pFR);
@@ -242,7 +249,7 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
         if (result == null || !result.isValid()) {
 
             // Manual select (held dpad, simple & reliable)
-            if (gamepad1.dpad_up)   manualFallbackRPM = MANUAL_RPM_UP;
+            if (gamepad1.dpad_up) manualFallbackRPM = MANUAL_RPM_UP;
             if (gamepad1.dpad_down) manualFallbackRPM = MANUAL_RPM_DOWN;
 
             double predictedRPM = clamp(manualFallbackRPM, PRED_RPM_MIN, PRED_RPM_MAX);
@@ -259,7 +266,7 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
         Double txDeg = getTxToGoalTag(goalTagId, result);
 
         if (tyDeg == null) {
-            if (gamepad1.dpad_up)   manualFallbackRPM = MANUAL_RPM_UP;
+            if (gamepad1.dpad_up) manualFallbackRPM = MANUAL_RPM_UP;
             if (gamepad1.dpad_down) manualFallbackRPM = MANUAL_RPM_DOWN;
 
             double predictedRPM = clamp(manualFallbackRPM, PRED_RPM_MIN, PRED_RPM_MAX);
@@ -271,7 +278,7 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
 
         Double trigDistIn = trigDistanceToGoalInchesFromTy(tyDeg);
         if (trigDistIn == null) {
-            if (gamepad1.dpad_up)   manualFallbackRPM = MANUAL_RPM_UP;
+            if (gamepad1.dpad_up) manualFallbackRPM = MANUAL_RPM_UP;
             if (gamepad1.dpad_down) manualFallbackRPM = MANUAL_RPM_DOWN;
 
             double predictedRPM = clamp(manualFallbackRPM, PRED_RPM_MIN, PRED_RPM_MAX);
@@ -397,5 +404,54 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
         if (dIn <= 0) return null;
         return dIn;
     }
+
+    // Intake - gamepad 1: right bumper (start & stop)
+    public double counterI;
+
+
+//    if (gamepad2.rightBumper)
+//    {
+//        counterI += 1;
+//    }
+//    if (counterI % 2 == 0)
+//    {
+//        mI.setPower(1.0);
+//    }
+//    if (counterI % 2 == 1)
+//    {
+//        mI.setPower(0.0);
+////    }
+////
+////
+////
+//// Lotus motus - gamepad 2: a (start & stop)
+//            if (gamepad2.aWasPressed())
+//    {
+//        counterRW2a +=1;
+//    }
+//            if (counterRW2a % 2 == 0)
+//    {
+//        sRW2.setPower(1.0);
+//    }
+//            if (counterRW2a % 2 == 1  && counterRW2x % 2 == 1)
+//    {
+//        sRW2.setPower(0.0);
+//    }
+//
+//
+//            if (gamepad2.xWasPressed())
+//    {
+//        counterRW2x +=1;
+//    }
+//            if (counterRW2x % 2 == 0)
+//    {
+//        sRW2.setPower(-0.25);
+//    }
+//            if (counterRW2x % 2 == 1 && counterRW2a % 2 == 1)
+//    {
+//        sRW2.setPower(0.0);
+//    }
+//
+
 }
 

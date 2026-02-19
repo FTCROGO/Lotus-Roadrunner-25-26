@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode.messages;
 
 import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-
+@Disabled
 public final class MecanumLocalizerInputsMessage {
     public long timestamp;
     public PositionVelocityPair leftFront;

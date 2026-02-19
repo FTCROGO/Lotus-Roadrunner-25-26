@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.messages;
 
 import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+@Disabled
 public final class ThreeDeadWheelInputsMessage {
     public long timestamp;
     public PositionVelocityPair par0;
