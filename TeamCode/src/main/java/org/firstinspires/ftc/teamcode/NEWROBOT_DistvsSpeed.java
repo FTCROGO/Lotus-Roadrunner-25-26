@@ -102,6 +102,7 @@ public class NEWROBOT_DistvsSpeed extends LinearOpMode {
         //telemetry.addLine("Manual RW2 pulse: gamepad2 LEFT BUMPER. Unjam: hold gamepad2 X.");
         telemetry.update();
 
+
         waitForStart();
 
         while (opModeIsActive()) {
@@ -109,6 +110,9 @@ public class NEWROBOT_DistvsSpeed extends LinearOpMode {
             // 1) Pick which goal tag you are aiming at
             if (gamepad1.xWasPressed()) goalTagId = BLUE_GOAL_TAG_ID;
             if (gamepad1.bWasPressed()) goalTagId = RED_GOAL_TAG_ID;
+
+            //output color order
+            String colorOrder = getColorOrderFromTag();
 
             // 2) Manual drive + optional aim assist overlay
             driveFieldCentricWithOptionalAimAssist();
@@ -168,6 +172,50 @@ public class NEWROBOT_DistvsSpeed extends LinearOpMode {
         // LED (servo-like controller)
         //sLED = hardwareMap.get(Servo.class, "sLED");
     }
+
+    // -------------------------
+// Color Order From AprilTag (With Telemetry)
+// -------------------------
+    private String getColorOrderFromTag() {
+
+        limelight.pipelineSwitch(3);
+
+        LLResult result = limelight.getLatestResult();
+
+        String colorOrder = "UNKNOWN";
+
+        if (result != null && result.isValid()
+                && result.getFiducialResults() != null
+                && !result.getFiducialResults().isEmpty()) {
+
+            int tagID = result.getFiducialResults().get(0).getFiducialId();
+
+            switch (tagID) {
+                case 21:
+                    colorOrder = "GPP";
+                    break;
+
+                case 22:
+                    colorOrder = "PGP";
+                    break;
+
+                case 23:
+                    colorOrder = "PPG";
+                    break;
+            }
+
+            telemetry.addData("Detected Tag ID", tagID);
+        }
+
+        telemetry.addData("Color Order", colorOrder);
+        telemetry.update();
+
+        limelight.pipelineSwitch(7);
+
+        return colorOrder;
+    }
+
+
     // =========================================================
     // DRIVE + AIM ASSIST
     // =========================================================
