@@ -3,23 +3,23 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-@Disabled
-@TeleOp(name = "NEWROBOT_LotusTeleOp", group = "Robot")
-public class NEWROBOT_LotusTeleOP extends LinearOpMode {
+
+@TeleOp(name = "NEWROBOT_DistvsSpeed", group = "Robot")
+public class NEWROBOT_DistvsSpeed extends LinearOpMode {
 
     // =========================
     // Hardware
@@ -27,17 +27,17 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
 
     private DcMotor mFL, mFR, mBL, mBR, mI;
     private DcMotorEx mFW;
-    private CRServo sG, sF;
+    //private CRServo sG, sF;
     private IMU imu;
     private Limelight3A limelight;
-    private Servo sLED;
+    //private Servo sLED;
 
     // =========================
     // Constants (tune)
     // =========================
     private static final double TICKS_PER_REV = 28;       // change to your motor spec!
     private static final int BLUE_GOAL_TAG_ID = 20;
-    private static final int RED_GOAL_TAG_ID = 24;
+    private static final int RED_GOAL_TAG_ID  = 24;
 
     // Aim assist tuning
     private static final double AIM_KP = 0.02;
@@ -78,6 +78,12 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
     private double lastPredictedRPM = MANUAL_RPM_UP;
     private double manualFallbackRPM = MANUAL_RPM_UP;
 
+    // Flywheel tuning
+    private static final double RPM_STEP = 100;              // change per button press
+    private static final double RPM_MIN = 1500;
+    private static final double RPM_MAX = 6000;
+
+
 
     // For field-centric drive
     private double initYawRad;
@@ -96,6 +102,7 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
         //telemetry.addLine("Manual RW2 pulse: gamepad2 LEFT BUMPER. Unjam: hold gamepad2 X.");
         telemetry.update();
 
+
         waitForStart();
 
         while (opModeIsActive()) {
@@ -103,6 +110,9 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
             // 1) Pick which goal tag you are aiming at
             if (gamepad1.xWasPressed()) goalTagId = BLUE_GOAL_TAG_ID;
             if (gamepad1.bWasPressed()) goalTagId = RED_GOAL_TAG_ID;
+
+            //output color order
+            String colorOrder = getColorOrderFromTag();
 
             // 2) Manual drive + optional aim assist overlay
             driveFieldCentricWithOptionalAimAssist();
@@ -113,13 +123,15 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
             // 4) Flywheel control (toggle Y); LED green when within tolerance
             applyFlywheelControl(predictedRPM);
 
+            // 3) Flywheel RPM tuning
+            //updateFlywheelRPMControls();
+            //applyFlywheelControl();
 
             telemetry.update();
         }
 
         limelight.stop();
     }
-
     // =========================================================
     // HARDWARE INIT
     // =========================================================
@@ -132,8 +144,8 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
         mFW = hardwareMap.get(DcMotorEx.class, "mFW");
         mFW.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        sG = hardwareMap.get(CRServo.class, "sG");
-        sF = hardwareMap.get(CRServo.class, "sF");
+        //sG = hardwareMap.get(CRServo.class, "sG");
+        //sF = hardwareMap.get(CRServo.class, "sF");
 
         imu = hardwareMap.get(IMU.class, "imu");
 
@@ -143,8 +155,8 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
         mBL.setDirection(DcMotor.Direction.REVERSE);
         mBR.setDirection(DcMotor.Direction.FORWARD);
 
-        sG.setDirection(CRServo.Direction.REVERSE);
-        sF.setDirection(CRServo.Direction.REVERSE);
+        //sG.setDirection(CRServo.Direction.REVERSE);
+        //sF.setDirection(CRServo.Direction.REVERSE);
 
         RevHubOrientationOnRobot orientation = new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
@@ -158,8 +170,51 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
         limelight.start();
 
         // LED (servo-like controller)
-        sLED = hardwareMap.get(Servo.class, "sLED");
+        //sLED = hardwareMap.get(Servo.class, "sLED");
     }
+
+    // -------------------------
+// Color Order From AprilTag (With Telemetry)
+// -------------------------
+    private String getColorOrderFromTag() {
+
+        limelight.pipelineSwitch(3);
+
+        LLResult result = limelight.getLatestResult();
+
+        String colorOrder = "UNKNOWN";
+
+        if (result != null && result.isValid()
+                && result.getFiducialResults() != null
+                && !result.getFiducialResults().isEmpty()) {
+
+            int tagID = result.getFiducialResults().get(0).getFiducialId();
+
+            switch (tagID) {
+                case 21:
+                    colorOrder = "GPP";
+                    break;
+
+                case 22:
+                    colorOrder = "PGP";
+                    break;
+
+                case 23:
+                    colorOrder = "PPG";
+                    break;
+            }
+
+            telemetry.addData("Detected Tag ID", tagID);
+        }
+
+        telemetry.addData("Color Order", colorOrder);
+        telemetry.update();
+
+        limelight.pipelineSwitch(7);
+
+        return colorOrder;
+    }
+
 
     // =========================================================
     // DRIVE + AIM ASSIST
@@ -196,7 +251,8 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
             if (txDeg != null && trigDistIn != null) {
                 // txSetpoint = atan(offset / distance)
                 double txSetpointDeg = Math.toDegrees(Math.atan2(LL_LATERAL_OFFSET_IN, trigDistIn));
-                double txErrorDeg = txDeg - txSetpointDeg;
+                //double txErrorDeg = txDeg - txSetpointDeg;
+                double txErrorDeg = txDeg;
                 turnAssist = clamp(txErrorDeg * AIM_KP, -AIM_MAX_TURN, AIM_MAX_TURN);
 
                 telemetry.addData("AimAssist", "ON tx=%.1f° set=%.1f° err=%.1f° turn=%.2f",
@@ -223,12 +279,7 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
         // Normalize
         double max = Math.max(Math.max(Math.abs(pFL), Math.abs(pFR)),
                 Math.max(Math.abs(pBL), Math.abs(pBR)));
-        if (max > 1.0) {
-            pFL /= max;
-            pFR /= max;
-            pBL /= max;
-            pBR /= max;
-        }
+        if (max > 1.0) { pFL /= max; pFR /= max; pBL /= max; pBR /= max; }
 
         mFL.setPower(pFL);
         mFR.setPower(pFR);
@@ -237,6 +288,43 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
 
         telemetry.addData("Goal Tag", goalTagId);
         telemetry.addData("IMU Yaw", "%.1f°", yawRad);
+    }
+    // =========================================================
+    // 2) FLYWHEEL RPM: toggle + adjust RPM
+    //    - gamepad2 Y toggles flywheel ON/OFF
+    //    - gamepad2 dpad up/down changes RPM target
+    //    - uses DcMotorEx.setVelocity(ticksPerSecond)
+    // =========================================================
+    private void updateFlywheelRPMControls() {
+        if (gamepad2.yWasPressed()) {
+            flywheelOn = !flywheelOn;
+        }
+
+        if (gamepad2.dpad_up) {
+            flywheelTargetRPM += RPM_STEP;
+        } else if (gamepad2.dpad_down) {
+            flywheelTargetRPM -= RPM_STEP;
+        }
+
+        flywheelTargetRPM = clamp(flywheelTargetRPM, RPM_MIN, RPM_MAX);
+    }
+
+    private void applyFlywheelControl() {
+        double currentRPM = mFW.getVelocity() * 60.0 / TICKS_PER_REV;
+
+        if (!flywheelOn) {
+            mFW.setPower(0.0);
+            telemetry.addData("Flywheel", "OFF (RPM=%.0f)", currentRPM);
+            return;
+        }
+
+        // Convert RPM -> ticks/sec for setVelocity
+        double targetTicksPerSec = flywheelTargetRPM * TICKS_PER_REV / 60.0;
+        mFW.setVelocity(targetTicksPerSec);
+
+
+        telemetry.addData("Flywheel", "ON Target=%.0f RPM  Current=%.0f RPM",
+                flywheelTargetRPM, currentRPM);
     }
 
     // =========================================================
@@ -249,7 +337,7 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
         if (result == null || !result.isValid()) {
 
             // Manual select (held dpad, simple & reliable)
-            if (gamepad1.dpad_up) manualFallbackRPM = MANUAL_RPM_UP;
+            if (gamepad1.dpad_up)   manualFallbackRPM = MANUAL_RPM_UP;
             if (gamepad1.dpad_down) manualFallbackRPM = MANUAL_RPM_DOWN;
 
             double predictedRPM = clamp(manualFallbackRPM, PRED_RPM_MIN, PRED_RPM_MAX);
@@ -266,7 +354,7 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
         Double txDeg = getTxToGoalTag(goalTagId, result);
 
         if (tyDeg == null) {
-            if (gamepad1.dpad_up) manualFallbackRPM = MANUAL_RPM_UP;
+            if (gamepad1.dpad_up)   manualFallbackRPM = MANUAL_RPM_UP;
             if (gamepad1.dpad_down) manualFallbackRPM = MANUAL_RPM_DOWN;
 
             double predictedRPM = clamp(manualFallbackRPM, PRED_RPM_MIN, PRED_RPM_MAX);
@@ -278,7 +366,7 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
 
         Double trigDistIn = trigDistanceToGoalInchesFromTy(tyDeg);
         if (trigDistIn == null) {
-            if (gamepad1.dpad_up) manualFallbackRPM = MANUAL_RPM_UP;
+            if (gamepad1.dpad_up)   manualFallbackRPM = MANUAL_RPM_UP;
             if (gamepad1.dpad_down) manualFallbackRPM = MANUAL_RPM_DOWN;
 
             double predictedRPM = clamp(manualFallbackRPM, PRED_RPM_MIN, PRED_RPM_MAX);
@@ -325,7 +413,7 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
         // OFF behavior
         if (!flywheelOn) {
             mFW.setPower(0.0);
-            sLED.setPosition(LED_OFF_POS);
+            //sLED.setPosition(LED_OFF_POS);
             telemetry.addData("Flywheel", "OFF (RPM=%.0f)", currentRPM);
             telemetry.addData("TargetRPM", "%.0f", flywheelTargetRPM);
             return;
@@ -336,15 +424,16 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
         mFW.setVelocity(targetTicksPerSec);
 
         boolean atSpeed = Math.abs(currentRPM - flywheelTargetRPM) <= LED_RPM_TOL;
-        sLED.setPosition(atSpeed ? LED_GREEN_POS : LED_OFF_POS);
+        //sLED.setPosition(atSpeed ? LED_GREEN_POS : LED_OFF_POS);
 
         telemetry.addData("Flywheel", "ON  Target=%.0f  Current=%.0f", flywheelTargetRPM, currentRPM);
         telemetry.addData("AtSpeed", atSpeed ? "YES" : "NO");
     }
 
-    // =========================================================
-    // Helpers
-    // =========================================================
+
+    //----------------------------------
+// Helper class
+// ----------------------------------
 
 
     private double getFlywheelRPM() {
@@ -404,54 +493,5 @@ public class NEWROBOT_LotusTeleOP extends LinearOpMode {
         if (dIn <= 0) return null;
         return dIn;
     }
-
-    // Intake - gamepad 1: right bumper (start & stop)
-    public double counterI;
-
-
-//    if (gamepad2.rightBumper)
-//    {
-//        counterI += 1;
-//    }
-//    if (counterI % 2 == 0)
-//    {
-//        mI.setPower(1.0);
-//    }
-//    if (counterI % 2 == 1)
-//    {
-//        mI.setPower(0.0);
-////    }
-////
-////
-////
-//// Lotus motus - gamepad 2: a (start & stop)
-//            if (gamepad2.aWasPressed())
-//    {
-//        counterRW2a +=1;
-//    }
-//            if (counterRW2a % 2 == 0)
-//    {
-//        sRW2.setPower(1.0);
-//    }
-//            if (counterRW2a % 2 == 1  && counterRW2x % 2 == 1)
-//    {
-//        sRW2.setPower(0.0);
-//    }
-//
-//
-//            if (gamepad2.xWasPressed())
-//    {
-//        counterRW2x +=1;
-//    }
-//            if (counterRW2x % 2 == 0)
-//    {
-//        sRW2.setPower(-0.25);
-//    }
-//            if (counterRW2x % 2 == 1 && counterRW2a % 2 == 1)
-//    {
-//        sRW2.setPower(0.0);
-//    }
-//
-
 }
 
