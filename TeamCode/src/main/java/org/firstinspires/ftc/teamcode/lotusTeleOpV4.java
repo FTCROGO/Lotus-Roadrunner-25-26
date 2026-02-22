@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Color;
+
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -29,7 +32,7 @@ public class lotusTeleOpV4 extends LinearOpMode {
     public Limelight3A limeLight;
     public Servo sLED;
     public PinpointLocalizer pinpoint;
-    public ColorSensor
+    public ColorSensor color;
 
     @Override
     public void runOpMode() {
@@ -65,9 +68,12 @@ public class lotusTeleOpV4 extends LinearOpMode {
 
         imu = hardwareMap.get(IMU.class, "imu");
 
-        // Initialize limelight
         limeLight = hardwareMap.get(Limelight3A.class, "LimeLight");
         sLED = hardwareMap.get(Servo.class, "sLED");
+        color = hardwareMap.get(ColorSensor.class, "color");
+        float[] hsvValues = {0F, 0F, 0F};
+        final float values[] = hsvValues;
+        final double scale_factor = 255;
 
 
         mFL.setDirection(DcMotor.Direction.REVERSE);
@@ -82,8 +88,9 @@ public class lotusTeleOpV4 extends LinearOpMode {
         sF.setDirection(Servo.Direction.REVERSE);
 
         mLM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        mLM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        mLM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mLM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        mLM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        mLM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         sG.setPosition(outGate);
         sF.setPosition(outFlicker);
@@ -114,6 +121,8 @@ public class lotusTeleOpV4 extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            telemetry.addData("mLM encoder", "%d", mLM.getCurrentPosition());
+            telemetry.update();
 // Drivetrain - gamepad 1: left stick y (drive), left stick x (strafe), right stick x (turn)
             currentZ = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
             differenceZ = currentZ - initZ;
@@ -177,7 +186,7 @@ public class lotusTeleOpV4 extends LinearOpMode {
                 counterLM += 1;
             }
             if (counterLM % 2 == 0) {
-                mLM.setPower(0.8);
+                mLM.setPower(0.1);
             }
             if (counterLM % 2 == 1) {
                 mLM.setPower(0.0);
@@ -212,73 +221,16 @@ public class lotusTeleOpV4 extends LinearOpMode {
                 sF.setPosition(inFlicker);
                 sF.setPosition(outFlicker);
             }
-            if (counterF % 2 == 1)
+            if (counterF % 2 == 1) {
                 sF.setPosition(outFlicker);
             }
 
+// Color sensor
+            Color.RGBToHSV((int) (color.red() * scale_factor),
+                    (int) (color.green() * scale_factor),
+                    (int) (color.blue() * scale_factor), hsvValues);
 
-
-//            LLResult result = LimeLight.getLatestResult();
-//
-//            if (result != null) {
-//
-//                // APRIL TAG DETECTION (for obelisk sides)
-//                List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
-//
-//                double distance = 0;
-//                if (!fiducials.isEmpty()) {
-//                    for (LLResultTypes.FiducialResult fiducial : fiducials) {
-//                        int id = fiducial.getFiducialId();
-//                        double tx = fiducial.getTargetXDegrees();
-//                        double ty = fiducial.getTargetYDegrees();
-//                        distance = result.getBotposeAvgDist();
-//                        telemetry.addData("Fiducial " + id, "is " + distance + " meters away");
-//
-//                        Object aprilTagID = null;
-//                        telemetry.addData("AprilTag ID", (Object) null);
-//                        telemetry.addData("AprilTag X", tx);
-//                        telemetry.addData("AprilTag Y", ty);
-//                    }
-//                }
-//
-//                YawPitchRollAngles angle = imu.getRobotYawPitchRollAngles();
-//                telemetry.addData("angle", "%.2f", angle);
-
-//                if (distance < 1.35 && distance > 0.58 && angle > x && angle < y
-//                        || distance > 1.75 && distance < 1.93 && angle > x && angle < y) {
-//
-//                    led.setPosition(0.5);
-//                } else {
-//                    led.setPosition(0.2);
-//                }
-
-
-//                // COLOR DETECTION (for green/purple balls)
-//                List<LLResultTypes.ColorResult> colorResults = result.getColorResults();
-//
-//                if (!colorResults.isEmpty()) {
-//                    for (LLResultTypes.ColorResult color : colorResults) {
-//                        double ballX = color.getTargetXDegrees();
-//                        double ballY = color.getTargetYDegrees();
-//                        double ballArea = color.getTargetArea();
-//
-//                        telemetry.addData("Ball X", ballX);
-//                        telemetry.addData("Ball Y", ballY);
-//                        telemetry.addData("Ball Area", ballArea);
-//                    }
-//                } else {
-//                    telemetry.addData("Balls", "None detected");
-//                }
-
-            // Telemetry
-//            telemetry.addData("controller left trigger", gamepad2.left_bumper);
-//            telemetry.addData("controller right trigger", gamepad2.right_bumper);
-//            telemetry.addData("counterG", "%.2f", counterG);
-//            telemetry.addData("counterF", "%.2f", counterF);
-//            telemetry.addData("sG position", "%.2f", sG.getPower());
-//            telemetry.addData("sF", "%.2f", sF.getPower());
-            telemetry.addData("lm encoder", "%.2f", mLM.getCurrentPosition());
-            telemetry.update();
+// Telemetry
         }
     }
-//        LimeLight.stop();
+}
