@@ -51,7 +51,6 @@ import java.lang.Math;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-@Disabled
 @Config
 public final class MecanumDrive {
     public static class Params {
@@ -60,17 +59,16 @@ public final class MecanumDrive {
         public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
                 RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
         public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
-                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
-
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
         // drive model parameters
-        public double inPerTick = 0.001966537150107;
-        public double lateralInPerTick = inPerTick;
-        public double trackWidthTicks = 6777.284271899443;
+        public double inPerTick = 0.00223367697594501;
+        public double lateralInPerTick = 0.0017117774175294134;
+        public double trackWidthTicks = 5372.307692;
 
         // feedforward parameters (in tick units)
-        public double kS = 0.8104953818499809;
-        public double kV = 0.0003727646884575938;
-        public double kA = 0.00001;
+        public double kS = 1.0756166602542399;
+        public double kV = 0.0003697957770861525;
+        public double kA = 0.000001;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 30;
@@ -82,9 +80,9 @@ public final class MecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 4;
-        public double lateralGain = 3;
-        public double headingGain = 4; // shared with turn
+        public double axialGain = 1;
+        public double lateralGain = 1;
+        public double headingGain = 1; // shared with turn
 
         public double axialVelGain = 0.0;
         public double lateralVelGain = 0.0;
@@ -117,7 +115,7 @@ public final class MecanumDrive {
 
     private final DownsampledWriter estimatedPoseWriter = new DownsampledWriter("ESTIMATED_POSE", 50_000_000);
     private final DownsampledWriter targetPoseWriter = new DownsampledWriter("TARGET_POSE", 50_000_000);
-    private final DownsampledWriter driveCommandWriter = new DownsampledWriter("DRIVE_COMMAND", 50_000_000);
+    private final DownsampledWriter driveCommandWriter = new DownsampledWriter("DRIVE_C`````````````OMMAND", 50_000_000);
     private final DownsampledWriter mecanumCommandWriter = new DownsampledWriter("MECANUM_COMMAND", 50_000_000);
 
     public class DriveLocalizer implements Localizer {
@@ -236,7 +234,7 @@ public final class MecanumDrive {
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBack.setDirection(DcMotorSimple.Direction.FORWARD);
 
